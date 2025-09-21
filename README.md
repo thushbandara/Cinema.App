@@ -35,39 +35,7 @@ Extensible Architecture: Clean separation of concerns (Minimal API, Repositories
 
 ## 📂 Project Structure
 
-Cinema.App/
-│── tests/
-│   ├── cinema.app.web.cypress.test/
-│   └── cinema.app.web.tests/
-│
-│── web/
-│   └── cinema.app.web/
-│       ├── ClientApp/
-│       │   ├── app/
-│       │   │   ├── api/
-│       │   │   ├── components/
-│       │   │   ├── routes/
-│       │   │   └── utils/
-│       │   ├── app.css
-│       │   ├── root.tsx
-│       │   └── routes.ts
-│       │
-│       ├── Features/
-│       │   └── Booking/
-│       │       ├── DTOs/
-│       │       ├── Handlers/
-│       │       ├── Profiles/
-│       │       └── Repositories/
-│       │
-│       ├── Infrastructure/
-│       │   ├── Configuration/
-│       │   ├── Contracts/
-│       │   |── Entities/
-│       │	└── CinemaContext.cs
-│       |
-│       ├── Program.cs
-│       ├── appsettings.json
-│       └── README.md
+<img width="307" height="408" alt="image" src="https://github.com/user-attachments/assets/be85c09d-f6d1-4817-9ddd-26f228ff79ea" />
 
 
 ## 🚀 How to Setup
@@ -176,7 +144,7 @@ The app will be available at:
 
 ### Unit Testing (xUnit)
 
-- The backend follows a Domain-Driven Design (DDD) approach with a Vertical Slice architecture, keeping each feature self-contained (e.g., Booking with its own DTOs, Handlers, Repositories, and Validators). Some of the test cases are developed using a Test-Driven Development (TDD) style, where tests are written before implementation to guide the design.
+- The backend follows a **Domain-Driven Design (DDD)** approach with a Vertical Slice architecture, keeping each feature self-contained (e.g., Booking with its own DTOs, Handlers, Repositories, and Validators). Some of the test cases are developed using a **Test-Driven Development (TDD)** style, where tests are written before implementation to guide the design.
 - Tests cover:  
   - Booking repository  
   - Query/command handlers  
