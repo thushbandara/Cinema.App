@@ -8,7 +8,6 @@ namespace cinema.app.web.Features.Movie.Repositories
     public interface IMovieRepository
     {
         Task<EntityMovie> DefineMovie(EntityMovie entity, CancellationToken cancellationToken);
-
         Task<EntityMovie?> GetCinemaById(Guid id, CancellationToken cancellationToken);
         Task<EntityMovie> UpdateCinemaWithBookings(Guid cinemaId, EntityBooking Bookings, CancellationToken cancellationToken);
     }

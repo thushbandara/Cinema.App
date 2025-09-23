@@ -2,7 +2,7 @@
 {
     public class SearchBookingResponseDto
     {
-        public string Id { get; set; } = string.Empty;
+        public Guid Id { get; set; } 
         public string BookingReference { get; set; } = string.Empty;
         public Guid MovieId { get; set; }
         public List<string> SelectedSeats { get; set; } = new();

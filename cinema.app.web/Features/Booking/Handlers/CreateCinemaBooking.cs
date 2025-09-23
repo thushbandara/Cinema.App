@@ -84,9 +84,14 @@ namespace cinema.app.web.Features.Booking.Handlers
                         Seats = seats
                     };
 
-                    var updatedCinema = await _movieRepository.UpdateCinemaWithBookings(cinema.Id, booking, cancellationToken);
+                    await _movieRepository.UpdateCinemaWithBookings(cinema.Id, booking, cancellationToken);
 
-                    return _mapper.Map<BookingResponseDto>(booking);
+                    return new BookingResponseDto
+                    {
+                        MovieId = cinema.Id,
+                        BookingReference = bookingId,
+                        Seats = seats
+                    };
                 }
                 catch (Exception)
                 {

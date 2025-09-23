@@ -18,7 +18,7 @@ namespace cinema.app.web.tests.Features.Booking.Repositories
         }
 
         [Fact]
-        public async Task When_CreateCinemaBooking_ShouldAddBooking_Positive()
+        public async Task When_SearchBookingByReference_ShouldReturnData_Positive()
         {
             // arrange
             var context = GetInMemoryContext();
@@ -27,81 +27,29 @@ namespace cinema.app.web.tests.Features.Booking.Repositories
             var booking = new EntityBooking
             {
                 BookingReference = "Ref-100",
-                Seats = new List<EntitySeat>
-                        {
-                          new ()
-                           {
-                               Label = "A1",
-                               Row = 1,
-                               Column = 2
-                          }
-                        }
             };
 
+            context.Booking.Add(new EntityBooking
+            {
+                BookingReference ="Ref-100", 
+                Seats = ["K1"]
+            });
+
+            context.SaveChanges();
+
             // act
-            await repository.CreateCinemaBooking(booking, default);
+            var response = await repository.SearchBookingByReference(booking.BookingReference, default);
 
             // assert
-            var saved = await context.CinemaBooking.Include(x => x.Seats).FirstOrDefaultAsync();
-            
-            saved.Should().NotBeNull();
-            saved.BookingReference.Should().Be("Ref-100");
-            saved.Seats.Should().NotBeNull();
 
-            foreach (var seat in saved.Seats)
+            response.Should().NotBeNull();
+            response.BookingReference.Should().Be("Ref-100");
+            response.Seats.Should().NotBeNull();
+
+            foreach (var seat in response.Seats)
             {
                 seat.Should().NotBeNull();
-                seat.Label.Should().Be("A1");
-                seat.Row.Should().Be(1);
-                seat.Column.Should().Be(2);
             }           
-        }
-
-        [Fact]
-        public async Task When_GetAllBookings_Should_ReturnBookings_Positive()
-        {
-            // arrange
-            var context = GetInMemoryContext();
-            var repository = new CinemaBookingRepository(context);
-
-            var entity = new EntityBooking
-            {
-                BookingReference = "Ref-200",
-                Seats = new List<EntitySeat>
-                {
-                    new ()
-                    {
-                        Label = "B1",
-                        Row = 1,
-                        Column = 0
-                    }
-                }
-            };
-
-            context.CinemaBooking.Add(entity);
-            await context.SaveChangesAsync();
-
-            // act
-            var result = await repository.GetAllBookings(default);
-
-            // assert
-            result.Should().NotBeNull();
-            result.Count.Should().Be(1);
-
-
-            foreach (var item in result)
-            {
-                item.BookingReference.Should().Be("Ref-200");
-                item.Seats.Count.Should().Be(1);
-
-                foreach(var seat in item.Seats)
-                {
-                    seat.Should().NotBeNull();
-                    seat.Label.Should().Be("B1");
-                    seat.Row.Should().Be(1);
-                    seat.Column.Should().Be(0);
-                }
-            }
         }
     }
 }

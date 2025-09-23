@@ -56,9 +56,10 @@ namespace cinema.app.web.Features.Booking.Handlers
 
                     var dto = new SearchBookingResponseDto
                     {
-                        Id = booking.BookingReference,
+                        Id = booking.Id,
+                        BookingReference = booking.BookingReference,
                         SelectedSeats = booking.Seats,
-                        TakenSeats = cinema!.Bookings.SelectMany(b => b.Seats).ToList()
+                        TakenSeats = [.. cinema!.Bookings.SelectMany(b => b.Seats)]
                     };
 
                     return dto;

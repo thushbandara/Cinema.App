@@ -31,7 +31,7 @@ namespace cinema.app.web.tests.Features.Movie.Handlers
                 Rows = 2
             };
 
-            var respnse = new DefineMovieResponseDto
+            var respnse = new MovieResponseDto
             {
                 SeatsPerRow = 1,
                 Title = "Title",
@@ -39,7 +39,7 @@ namespace cinema.app.web.tests.Features.Movie.Handlers
             };
 
             mapper.Map<EntityMovie>(Arg.Any<DefineMovieRequestDto>()).Returns(mappedEntity);
-            mapper.Map<DefineMovieResponseDto>(Arg.Any<EntityMovie>()).Returns(respnse);
+            mapper.Map<MovieResponseDto>(Arg.Any<EntityMovie>()).Returns(respnse);
 
             repository.DefineMovie(Arg.Any<EntityMovie>(),default).Returns(mappedEntity);
 
