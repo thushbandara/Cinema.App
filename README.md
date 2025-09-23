@@ -71,7 +71,7 @@ dotnet build
 Build the frontend:
 
 ```bash
-cd web/cinema.app.web.client/ClentApp
+cd cinema.app.web.client/ClentApp
 npm install
 npm run build
 ```
@@ -81,13 +81,13 @@ npm run build
 Start the backend API:
 
 ```bash
-dotnet run --project web/cinema.app.web
+dotnet run --project cinema.app.web
 ```
 
 Start the frontend :
 
 ```bash
-cd web/cinema.app.web.client/ClientApp
+cd cinema.app.web.client/ClientApp
 npm run dev
 ```
 
