@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using cinema.app.web.Features.Booking.DTOs;
 using cinema.app.web.Features.Booking.Repositories;
+using cinema.app.web.Features.Movie.DTOs;
+using cinema.app.web.Features.Movie.Repositories;
 using cinema.app.web.Infrastructure.Contracts;
 using cinema.app.web.Infrastructure.Entities;
 using cinema.app.web.Infrastructure.Exceptions;
@@ -15,7 +17,7 @@ namespace cinema.app.web.Features.Booking.Handlers
         {
             public void Configure(IEndpointRouteBuilder app)
             {
-                app.MapPost("/api/create_booking", async (BookingRequestDto request, ISender _sender) =>
+                app.MapPost("/api/cinema/book", async (BookingRequestDto request, ISender _sender) =>
                 {
                     return Results.Ok(await _sender.Send(new CreateCinemaBookingCommand(request)));
                 }).WithOpenApi(operation => new(operation)
@@ -29,35 +31,62 @@ namespace cinema.app.web.Features.Booking.Handlers
             }
         }
 
-        public record CreateCinemaBookingCommand(BookingRequestDto Request) : IRequest<string>;
+        public record CreateCinemaBookingCommand(BookingRequestDto Request) : IRequest<BookingResponseDto>;
 
-        public class Handler : IRequestHandler<CreateCinemaBookingCommand, string>
+        public class Handler : IRequestHandler<CreateCinemaBookingCommand, BookingResponseDto>
         {
             private readonly ICinemaBookingRepository _repository;
+            private readonly IMovieRepository _movieRepository;
             private readonly IMapper _mapper;
-            public Handler(ICinemaBookingRepository repository, IMapper mapper)
+            public Handler(ICinemaBookingRepository repository, IMapper mapper, IMovieRepository movieRepository)
             {
                 _repository = repository;
                 _mapper = mapper;
+                _movieRepository = movieRepository;
             }
 
-            public async Task<string> Handle(CreateCinemaBookingCommand request, CancellationToken cancellationToken)
+            public async Task<BookingResponseDto> Handle(CreateCinemaBookingCommand request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    if (request.Request.Seats.Count == 0)
+                    var cinema = await _movieRepository.GetCinemaById(request.Request.CinemaId, cancellationToken);
+
+                    if (cinema is null)
                     {
-                        throw new RecordNotFoundException("No seat selection found.");
+                        throw new RecordNotFoundException("No cinema found.");
                     }
+
+                    var taken = GetTakenSeats(cinema);
+
+                    var available = cinema.Rows * cinema.SeatsPerRow - taken.Count;
+
+                    if (request.Request.Tickets <= 0)
+                    {
+                        throw new ForbiddenException("Atleast should have one ticket.");
+                    }
+
+
+                    if (request.Request.Tickets > available)
+                    {
+                        throw new ForbiddenException("Not enough seats available.");
+                    }
+
+                    var seats = (request.Request.StartRow != null && request.Request.StartCol != null)
+                        ? CustomAllocation(cinema, taken, request.Request.StartRow, request.Request.StartCol.Value, request.Request.Tickets)
+                        : DefaultAllocation(cinema, taken, request.Request.Tickets);
 
                     var bookingId = GenerateBookingId;
 
-                    var entitie = _mapper.Map<EntityBooking>(request.Request);
-                    entitie.BookingReference = bookingId;
+                    var booking = new EntityBooking
+                    {
+                        MovieId = cinema.Id,
+                        BookingReference = bookingId,
+                        Seats = seats
+                    };
 
-                    await _repository.CreateCinemaBooking(entitie, cancellationToken);
+                    var updatedCinema = await _movieRepository.UpdateCinemaWithBookings(cinema.Id, booking, cancellationToken);
 
-                    return bookingId;
+                    return _mapper.Map<BookingResponseDto>(booking);
                 }
                 catch (Exception)
                 {
@@ -65,7 +94,14 @@ namespace cinema.app.web.Features.Booking.Handlers
                 }
             }
 
-            private string GenerateBookingId
+
+            public static List<string> GetTakenSeats(EntityMovie movie)
+            {
+                return movie.Bookings.SelectMany(b => b.Seats).ToList();
+            }
+
+
+            private static string GenerateBookingId
             {
                 get
                 {
@@ -75,6 +111,71 @@ namespace cinema.app.web.Features.Booking.Handlers
                     return $"GIC-{number}";
                 }
             }
+
+            private List<string> DefaultAllocation(EntityMovie movie, List<string> taken, int count)
+            {
+                var result = new List<string>();
+                int r = movie.Rows - 1;
+                int middle = (movie.SeatsPerRow + 1) / 2;
+
+                while (count > 0 && r >= 0)
+                {
+                    for (int c = middle; c <= movie.SeatsPerRow && count > 0; c++)
+                    {
+                        var seat = $"{RowLetter(r)}{c}";
+                        if (!taken.Contains(seat))
+                        {
+                            result.Add(seat);
+                            taken.Add(seat);
+                            count--;
+                        }
+                    }
+                    for (int c = middle - 1; c >= 1 && count > 0; c--)
+                    {
+                        var seat = $"{RowLetter(r)}{c}";
+                        if (!taken.Contains(seat))
+                        {
+                            result.Add(seat);
+                            taken.Add(seat);
+                            count--;
+                        }
+                    }
+                    r--;
+                }
+                return result;
+            }
+
+
+            private List<string> CustomAllocation(EntityMovie movie, List<string> taken, string startRow, int startCol, int count)
+            {
+                var result = new List<string>();
+                int r = RowIndex(startRow);
+                int c = startCol;
+
+                while (count > 0 && r >= 0)
+                {
+                    for (; c <= movie.SeatsPerRow && count > 0; c++)
+                    {
+                        var seat = $"{RowLetter(r)}{c}";
+                        if (!taken.Contains(seat))
+                        {
+                            result.Add(seat);
+                            taken.Add(seat);
+                            count--;
+                        }
+                    }
+                    r--;
+                    c = 1;
+                }
+
+                if (count > 0)
+                    result.AddRange(DefaultAllocation(movie, taken, count));
+
+                return result;
+            }
+
+            private static int RowIndex(string row) => row[0] - 'A';
+            private static string RowLetter(int index) => ((char)('A' + index)).ToString();
         }
     }
 }

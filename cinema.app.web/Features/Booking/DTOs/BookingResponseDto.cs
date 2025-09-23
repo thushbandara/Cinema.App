@@ -3,6 +3,7 @@
     public record BookingResponseDto
     {
         public string BookingReference { get; set; } = string.Empty;
-        public List<SeatsDto> Seats { get; set; } = [];
+        public List<string> Seats { get; set; } = [];
+        public Guid MovieId { get; set; }
     }
 }

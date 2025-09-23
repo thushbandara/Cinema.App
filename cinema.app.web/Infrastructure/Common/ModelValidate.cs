@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace cinema.app.web.Features.Booking.Validators
+namespace cinema.app.web.Infrastructure.Common
 {
     public abstract class ModelValidate<T> : AbstractValidator<T>
     {

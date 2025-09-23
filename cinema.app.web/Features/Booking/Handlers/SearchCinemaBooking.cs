@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using cinema.app.web.Features.Booking.DTOs;
 using cinema.app.web.Features.Booking.Repositories;
+using cinema.app.web.Features.Movie.Repositories;
 using cinema.app.web.Infrastructure.Contracts;
 using cinema.app.web.Infrastructure.Exceptions;
 using MediatR;
@@ -13,7 +14,7 @@ namespace cinema.app.web.Features.Booking.Handlers
         {
             public void Configure(IEndpointRouteBuilder app)
             {
-                app.MapGet("/api/search_booking/{booking_ref}", async (string booking_ref, ISender _sender) =>
+                app.MapGet("/api/cinema/search/{booking_ref}", async (string booking_ref, ISender _sender) =>
                 {
                     return Results.Ok(await _sender.Send(new SearchCinemaBookingQuery(booking_ref)));
                 }).WithOpenApi(operation => new(operation)
@@ -26,30 +27,41 @@ namespace cinema.app.web.Features.Booking.Handlers
             }
         }
 
-        public record SearchCinemaBookingQuery(string bookingRef) : IRequest<BookingResponseDto>;
+        public record SearchCinemaBookingQuery(string bookingRef) : IRequest<SearchBookingResponseDto>;
 
-        public class Handler : IRequestHandler<SearchCinemaBookingQuery, BookingResponseDto>
+        public class Handler : IRequestHandler<SearchCinemaBookingQuery, SearchBookingResponseDto>
         {
+            private readonly IMovieRepository _movieRepository;
             private readonly ICinemaBookingRepository _repository;
             private readonly IMapper _mapper;
-            public Handler(ICinemaBookingRepository repository, IMapper mapper)
+            public Handler(ICinemaBookingRepository repository, IMovieRepository movieRepository, IMapper mapper)
             {
+                _movieRepository = movieRepository;
                 _repository = repository;
                 _mapper = mapper;
             }
 
-            public async Task<BookingResponseDto> Handle(SearchCinemaBookingQuery request, CancellationToken cancellationToken)
+            public async Task<SearchBookingResponseDto> Handle(SearchCinemaBookingQuery request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var data = await _repository.SearchBookingByReference(request.bookingRef, cancellationToken);
+                    var booking = await _repository.SearchBookingByReference(request.bookingRef, cancellationToken);
 
-                    if (data == null)
+                    if (booking == null)
                     {
                         throw new RecordNotFoundException("Booking not found.");
                     }
 
-                    return _mapper.Map<BookingResponseDto>(data);
+                    var cinema = await _movieRepository.GetCinemaById(booking.MovieId, cancellationToken);
+
+                    var dto = new SearchBookingResponseDto
+                    {
+                        Id = booking.BookingReference,
+                        SelectedSeats = booking.Seats,
+                        TakenSeats = cinema!.Bookings.SelectMany(b => b.Seats).ToList()
+                    };
+
+                    return dto;
                 }
                 catch (Exception)
                 {

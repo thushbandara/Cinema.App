@@ -1,6 +1,7 @@
 ﻿using cinema.app.web.Features.Booking.Repositories;
-using cinema.app.web.Features.Booking.Validators;
+using cinema.app.web.Features.Movie.Repositories;
 using cinema.app.web.Infrastructure;
+using cinema.app.web.Infrastructure.Common;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -16,7 +17,8 @@ namespace cinema.app.web
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<ICinemaBookingRepository, CinemaBookingRepository>();
-
+            services.AddScoped<IMovieRepository, MovieRepository>();
+            
             services.AddValidatorsFromAssemblyContaining(typeof(ModelValidate<>));
 
             return services;

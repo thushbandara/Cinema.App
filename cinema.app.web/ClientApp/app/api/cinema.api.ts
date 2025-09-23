@@ -1,12 +1,12 @@
 import axios from "axios"
-import type { Booking, Seat } from "../utils/seats";
+import type { AddBooking, Booking, DefineMovie, Movie, SearchBooking } from "../utils/seats";
 const API_BASE_URL = "https://localhost:5001/api";
 
 
-export async function createBooking(seats: Seat[]) {
+export async function createBooking(booking: AddBooking) {
   try {
-    const res = await axios.post(`${API_BASE_URL}/create_booking`, { seats });
-    return res.data as string
+    const res = await axios.post(`${API_BASE_URL}/cinema/book`, { ...booking });
+    return res.data as Booking
   } catch (error) {
     throw error;
   }
@@ -23,8 +23,27 @@ export async function getAllBookings() {
 
 export async function searchBookingByReference(ref: string) {
   try {
-    const res = await axios.get(`${API_BASE_URL}/search_booking/${ref}`);
-    return res.data as Booking
+    const res = await axios.get(`${API_BASE_URL}/cinema/search/${ref}`);
+    return res.data as SearchBooking
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function defineCinema(movie: DefineMovie) {
+  try {
+    const res = await axios.post(`${API_BASE_URL}/cinema/define`, movie);
+    return res.data as Movie
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+export async function loadCinema(movie: string) {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/cinema/${movie}`);
+    return res.data as Movie
   } catch (error) {
     throw error;
   }

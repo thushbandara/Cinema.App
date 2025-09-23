@@ -1,4 +1,5 @@
 ﻿using cinema.app.web.Features.Booking.DTOs;
+using cinema.app.web.Infrastructure.Common;
 using FluentValidation;
 
 namespace cinema.app.web.Features.Booking.Validators
@@ -7,10 +8,13 @@ namespace cinema.app.web.Features.Booking.Validators
     {
         public BookingRequestValidator()
         {
-            RuleFor(x => x.Seats)
-                .NotNull().WithMessage("Seats are required.")
-                .Must(seats => seats != null && seats.Count > 0)
-                .WithMessage("At least one seat must be selected.");
+            //RuleFor(x => x.StartRow)
+            //    .NotNull().WithMessage("StartRow are required.");
+
+            //RuleFor(x => x.StartCol)
+            //   .NotNull().WithMessage("Start column is required.")
+            //   .Must(seats => seats >= 0)
+            //   .WithMessage("Start column should be 0 or more.");
         }
     }
 }

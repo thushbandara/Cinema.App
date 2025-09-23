@@ -25,6 +25,7 @@ namespace cinema.app.web.Infrastructure.Middleware
                 {
                     ValidationException => (int)HttpStatusCode.BadRequest,
                     RecordNotFoundException => (int)HttpStatusCode.NotFound,
+                    ForbiddenException => (int)HttpStatusCode.Forbidden,
                     _ => (int)HttpStatusCode.InternalServerError
                 };
 
@@ -32,6 +33,7 @@ namespace cinema.app.web.Infrastructure.Middleware
                 {
                     ValidationException exceptions => Result.Fail([.. exceptions.Errors.Select(a => a.ErrorMessage)], HttpStatusCode.BadRequest),
                     RecordNotFoundException => Result.Fail(ex.Message, HttpStatusCode.NotFound),
+                    ForbiddenException => Result.Fail(ex.Message, HttpStatusCode.Forbidden),
                     _ => Result.Fail("Error occurred while processing the request.", HttpStatusCode.InternalServerError)
                 };
 

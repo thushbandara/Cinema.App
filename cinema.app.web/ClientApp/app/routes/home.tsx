@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import Cinema from "../components/cinema/cinema";
+import Cinema from "../components/cinema";
 
 export function meta({}: Route.MetaArgs) {
   return [

@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace cinema.app.web.Features.Booking.DTOs
+﻿namespace cinema.app.web.Features.Booking.DTOs
 {
     public record BookingRequestDto
     {
-        public List<SeatsDto> Seats { get; set; } = [];
+        public Guid CinemaId { get; set; }
+        public int Tickets { get; set; }
+        public string? StartRow { get; set; }
+        public int? StartCol { get; set; }
     }
 }
