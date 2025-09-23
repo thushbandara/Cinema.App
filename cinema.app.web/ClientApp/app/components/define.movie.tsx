@@ -20,7 +20,7 @@ export default function DefineMovie({
 
     async function handleDefine() {
         if (!title || !rows || !seatsPerRow) {
-            alert("Please fill all fields");
+            setMessage("Please fill all fields.");
             return;
         }
 

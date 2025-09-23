@@ -11,7 +11,7 @@ export default function Cinema() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>GIC Cinemas</h1>
+      <h1 id="cinema-title">GIC Cinemas</h1>
       <div style={{ marginBottom: 20 }}>
         {message && <div className="alert alert-info mt-3">{message}</div>}
         <button

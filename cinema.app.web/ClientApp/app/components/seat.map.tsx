@@ -14,39 +14,43 @@ export default function SeatMap({ movie, takenSeats, currentSeats }: SeatMapProp
 
   return (
     <div style={{ fontFamily: "monospace", marginTop: 20 }}>
-      <div style={{ textAlign: "center", fontWeight: "bold", marginBottom: 20 }}>
+      {/* screen */}
+      <div style={{ textAlign: "center", fontWeight: "bold", marginBottom: 10 }}>
         SCREEN
       </div>
-      <div
-        style={{
-          textAlign: "center",
-          borderTop: "4px solid #333",
-          marginBottom: 30,
-          width: movie.seatsPerRow * 24,
-          margin: "0 auto"
-        }}
-      />
 
-      {rows.slice().reverse().map(row => (
+      {/* rows */}
+      {rows.slice().reverse().map((row, rowIndex) => (
         <div
           key={row}
-          style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 6 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 6
+          }}
         >
+          {/* row label on the left */}
+          <span style={{ width: 20, marginRight: 10, fontWeight: "bold" }}>
+            {String.fromCharCode(65 + rowIndex)} {/* A=65 in ASCII */}
+          </span>
+
+          {/* seats */}
           {Array.from({ length: movie.seatsPerRow }, (_, i) => {
             const col = i + 1;
-            const seatId = `${row}${col}`;
+            const seatId = `${String.fromCharCode(65 + rowIndex)}${col}`;
 
-            let bg = "#e0e0e0"; 
-            if (takenSeats?.includes(seatId)) bg = "#ff5252"; 
-            if (currentSeats?.includes(seatId)) bg = "#4caf50"; 
+            let bg = "#e0e0e0"; // free
+            if (takenSeats?.includes(seatId)) bg = "#ff5252"; // booked
+            if (currentSeats?.includes(seatId)) bg = "#4caf50"; // selected
 
             return (
               <div
                 key={seatId}
                 style={{
-                  width: 30,
-                  height: 30,
-                  margin: 2,
+                  width: 28,
+                  height: 28,
+                  margin: 3,
                   borderRadius: 4,
                   backgroundColor: bg,
                   display: "flex",
@@ -65,11 +69,18 @@ export default function SeatMap({ movie, takenSeats, currentSeats }: SeatMapProp
         </div>
       ))}
 
+      {/* column numbers under */}
       <div style={{ textAlign: "center", marginTop: 10 }}>
+        <span style={{ width: 30, display: "inline-block" }} />
         {Array.from({ length: movie.seatsPerRow }, (_, i) => (
           <span
             key={i}
-            style={{ display: "inline-block", width: 22, margin: 2, fontSize: 12 }}
+            style={{
+              display: "inline-block",
+              width: 28,
+              margin: 3,
+              fontSize: 12
+            }}
           >
             {i + 1}
           </span>
