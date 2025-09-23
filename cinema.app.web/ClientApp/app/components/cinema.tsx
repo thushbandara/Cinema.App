@@ -21,9 +21,11 @@ export default function Cinema() {
         <button
           id="btn-book"
           className="btn btn-success m-2"
+          disabled={!movie?.id}
           onClick={() => setActiveTab("book")}>Start Booking</button>
         <button
           id="btn-check"
+           disabled={!movie?.id}
           className="btn btn-success m-2"
           onClick={() => setActiveTab("check")}>Check Booking</button>
       </div>
