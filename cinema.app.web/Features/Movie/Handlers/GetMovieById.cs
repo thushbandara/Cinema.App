@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using cinema.app.web.Features.Booking.DTOs;
 using cinema.app.web.Features.Booking.Repositories;
 using cinema.app.web.Features.Movie.DTOs;
 using cinema.app.web.Features.Movie.Repositories;

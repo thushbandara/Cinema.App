@@ -11,7 +11,7 @@ namespace cinema.app.web.tests.Features.Movie.Handlers
     public class DefineMovieTests
     {
         [Fact]
-        public async Task WhenCalled_Define_Returns_MovieData_Posotive()
+        public async Task WhenCalled_DefineMovie_Returns_MovieData_Posotive()
         {
             // Arrange
             var repository = Substitute.For<IMovieRepository>();
