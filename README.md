@@ -82,6 +82,7 @@ npm run build
 Start the backend API:
 
 ```bash
+navigate to Cinema.App 
 dotnet run --project cinema.app.web
 ```
 
