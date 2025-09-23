@@ -25,7 +25,8 @@ Check Booking
 Build the cypress project:
 
 ```bash
-cd cinema.app.web.cypress
+navigate to Cinema.App -> cinema.app.web.cypress
+npm install cypress --save-dev
 npm install
 ```
 
@@ -35,6 +36,6 @@ npm install
 Start the frontend :
 
 ```bash
-cd cinema.app.web.cypress
+navigate to Cinema.App -> cinema.app.web.cypress
 npx cypress open
 ```
