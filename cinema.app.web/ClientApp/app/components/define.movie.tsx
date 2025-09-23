@@ -43,7 +43,6 @@ export default function DefineMovie({
     return (
         <div>
             <h3>Define Movie {movie && <span>- ({movie.title})</span>}</h3>
-            {message && <div className="alert alert-info mt-3">{message}</div>}
             <input
                 placeholder="Title"
                 id="txt-title"

@@ -13,6 +13,7 @@ export default function Cinema() {
     <div style={{ padding: 20 }}>
       <h1>GIC Cinemas</h1>
       <div style={{ marginBottom: 20 }}>
+        {message && <div className="alert alert-info mt-3">{message}</div>}
         <button
           id="btn-define"
           className="btn btn-success m-2"

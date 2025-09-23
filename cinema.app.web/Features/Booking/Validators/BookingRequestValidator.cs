@@ -8,13 +8,10 @@ namespace cinema.app.web.Features.Booking.Validators
     {
         public BookingRequestValidator()
         {
-            //RuleFor(x => x.StartRow)
-            //    .NotNull().WithMessage("StartRow are required.");
-
-            //RuleFor(x => x.StartCol)
-            //   .NotNull().WithMessage("Start column is required.")
-            //   .Must(seats => seats >= 0)
-            //   .WithMessage("Start column should be 0 or more.");
+            RuleFor(x => x.Tickets)
+               .NotNull().WithMessage("Ticket is required.")
+               .Must(x => x > 0)
+               .WithMessage("Atleats one ticket should booked.");
         }
     }
 }

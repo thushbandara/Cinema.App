@@ -13,7 +13,7 @@ export default function BookingFlow({
     setMessage
 }: BookingFlowProps) {
     const [tickets, setTickets] = useState("");
-    const [seatCode, setSeatCode] = useState(""); 
+    const [seatCode, setSeatCode] = useState("");
     const [booking, setBooking] = useState({} as Booking);
     const [currentMovie, setCurrentMovie] = useState(movie);
 
@@ -43,6 +43,12 @@ export default function BookingFlow({
             if (error.code === 'ERR_NETWORK') {
                 setMessage(`Backend server is not running. Please start the server and try again.`);
                 return;
+            }
+            if (error.response?.data?.errors) {
+                const errors = Object.values(error.response.data.errors).flat();
+                setMessage(`Error: ${errors[0]}`);
+            } else {
+                setMessage(`Error occurred.`);
             }
         });
     }
