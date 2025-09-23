@@ -65,13 +65,14 @@ First copy the zip file to the desired directory. Then unzip it to access the pr
 Build the backend API:
 
 ```bash
+navigate to Cinema.App 
 dotnet build
 ```
 
 Build the frontend:
 
 ```bash
-cd cinema.app.web.client/ClentApp
+navigate to Cinema.App -> cinema.app.web.client -> ClentApp
 npm install
 npm run build
 ```
@@ -84,10 +85,18 @@ Start the backend API:
 dotnet run --project cinema.app.web
 ```
 
+OR 
+
+```
+navigate to Cinema.App 
+open Cinema.App.sln using VS
+build the project
+```
+
 Start the frontend :
 
 ```bash
-cd cinema.app.web.client/ClientApp
+navigate to Cinema.App -> cinema.app.web.client -> ClentApp
 npm run dev
 ```
 
@@ -153,6 +162,7 @@ The app will be available at:
 Run tests:
 
 ```bash
+navigate to Cinema.App -> cinema.app.web.tests
 dotnet test
 ```
 
